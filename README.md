@@ -26,10 +26,11 @@ ShoppyGlobe is an e-commerce backend built using **Node.js, Express, and MongoDB
 
 1. **Clone the repository**
 
-   ```sh
-   git clone https://github.com/bablichoudhary/ShoppyGlobe_Backend.git
-   cd ShoppyGlobe_Backend
-   ```
+   ````sh
+   git clone https://github.com/bablichoudhary/ShoppyGlobe-backend.git
+   cd ShoppyGlobe-backend   ```
+
+   ````
 
 2. **Install dependencies**
 
