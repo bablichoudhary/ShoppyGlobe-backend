@@ -1,6 +1,6 @@
 const Product = require("../models/Product");
 
-// Function to validate if a string is a URL
+// Function to validate if a string is a valid URL
 const isValidUrl = (url) => {
   try {
     new URL(url);
@@ -10,7 +10,7 @@ const isValidUrl = (url) => {
   }
 };
 
-// Create Product
+// ✅ Create a new product
 exports.createProduct = async (req, res) => {
   try {
     const { name, description, price, imageUrl, stock } = req.body;
@@ -55,7 +55,7 @@ exports.createProduct = async (req, res) => {
   }
 };
 
-// Update Stock
+// ✅ Update product stock
 exports.updateStock = async (req, res) => {
   try {
     const { productId, stock } = req.body;
@@ -72,15 +72,56 @@ exports.updateStock = async (req, res) => {
         .json({ msg: "Stock must be a non-negative number" });
     }
 
-    // Find the product by ID
-    const product = await Product.findById(productId);
+    // Find the product by ID and update stock
+    const product = await Product.findByIdAndUpdate(
+      productId,
+      { stock },
+      { new: true }
+    );
+
     if (!product) return res.status(404).json({ msg: "Product not found" });
 
-    // Update stock and save changes
-    product.stock = stock;
-    await product.save();
-
     res.json({ msg: "Stock updated successfully", product });
+  } catch (err) {
+    res.status(500).json({ msg: "Server error", error: err.message });
+  }
+};
+
+// ✅ Get all products
+exports.getAllProducts = async (req, res) => {
+  try {
+    const products = await Product.find();
+    res.json(products);
+  } catch (err) {
+    res.status(500).json({ msg: "Server error", error: err.message });
+  }
+};
+
+// ✅ Get product by ID
+exports.getProductById = async (req, res) => {
+  try {
+    const product = await Product.findById(req.params.id);
+    if (!product) return res.status(404).json({ msg: "Product not found" });
+    res.json(product);
+  } catch (err) {
+    res.status(500).json({ msg: "Server error", error: err.message });
+  }
+};
+// update product by ID
+exports.updateProduct = async (req, res) => {
+  try {
+    const { id } = req.params;
+    const updates = req.body;
+
+    const updatedProduct = await Product.findByIdAndUpdate(id, updates, {
+      new: true,
+      runValidators: true,
+    });
+
+    if (!updatedProduct)
+      return res.status(404).json({ msg: "Product not found" });
+
+    res.json({ msg: "Product updated successfully", product: updatedProduct });
   } catch (err) {
     res.status(500).json({ msg: "Server error", error: err.message });
   }
